@@ -7,18 +7,16 @@ export const Badge: React.FC<{ variant?: BadgeVariant; children: React.ReactNode
   children,
   className = "",
 }) => {
-  const badgeStyles = {
-    success: "bg-status-success/15 text-status-success border-status-success/30",
-    warning: "bg-status-warning/15 text-status-warning border-status-warning/30",
-    danger: "bg-status-danger/15 text-status-danger border-status-danger/30",
-    brand: "bg-brand/15 text-brand border-brand/30",
-    neutral: "bg-surface-subtle text-text-secondary border-border-subtle",
+  const styles = {
+    success: "bg-status-success-bg text-status-success border-status-success/20",
+    warning: "bg-status-warning-bg text-status-warning border-status-warning/20",
+    danger: "bg-status-danger-bg text-status-danger border-status-danger/20",
+    brand: "bg-accent-1/10 text-accent-1 border-accent-1/20",
+    neutral: "bg-surface-subtle/50 text-text-secondary border-border-subtle",
   };
 
   return (
-    <span
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider border ${badgeStyles[variant]} ${className}`}
-    >
+    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider border ${styles[variant]} ${className}`}>
       {children}
     </span>
   );

@@ -17,23 +17,32 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-app flex flex-col">
-        <Header />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/converter" element={<Converter />} />
-            <Route path="/wallet" element={<Wallet />} />
-            <Route path="/scores" element={<LiveScores />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-        <MobileNav />
+        <Routes>
+          {/* Landing page is full-screen splash — no header/nav */}
+          <Route path="/" element={<Landing />} />
+
+          {/* App routes — with header and mobile nav */}
+          <Route path="/*" element={
+            <>
+              <Header />
+              <main className="flex-1">
+                <Routes>
+                  <Route path="/converter" element={<Converter />} />
+                  <Route path="/wallet" element={<Wallet />} />
+                  <Route path="/scores" element={<LiveScores />} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </main>
+              <MobileNav />
+            </>
+          } />
+        </Routes>
       </div>
     </BrowserRouter>
   );

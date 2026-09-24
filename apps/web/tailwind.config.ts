@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
-
-const config: Config = {
+export default {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
@@ -9,64 +8,53 @@ const config: Config = {
         app: "hsl(var(--bg-app) / <alpha-value>)",
         surface: {
           DEFAULT: "hsl(var(--bg-surface) / <alpha-value>)",
-          subtle: "hsl(var(--bg-surface-subtle) / <alpha-value>)",
+          2: "hsl(var(--bg-surface-2) / <alpha-value>)",
         },
+        input: "hsl(var(--bg-input) / <alpha-value>)",
         border: {
-          subtle: "hsl(var(--border-subtle) / <alpha-value>)",
-          strong: "hsl(var(--border-strong) / <alpha-value>)",
+          DEFAULT: "hsl(var(--border) / <alpha-value>)",
+          focus: "hsl(var(--border-focus) / <alpha-value>)",
         },
-        text: {
+        t: {
           primary: "hsl(var(--text-primary) / <alpha-value>)",
           secondary: "hsl(var(--text-secondary) / <alpha-value>)",
           muted: "hsl(var(--text-muted) / <alpha-value>)",
         },
-        brand: {
-          DEFAULT: "hsl(var(--brand-primary) / <alpha-value>)",
-          hover: "hsl(var(--brand-primary-hover) / <alpha-value>)",
-          fg: "hsl(var(--brand-primary-fg) / <alpha-value>)",
-          glow: "hsl(var(--brand-glow))",
+        green: {
+          DEFAULT: "hsl(var(--green) / <alpha-value>)",
+          dim: "hsl(var(--green-dim))",
+          hover: "hsl(var(--green-hover) / <alpha-value>)",
+          fg: "hsl(var(--green-fg) / <alpha-value>)",
         },
-        status: {
-          success: "hsl(var(--status-success) / <alpha-value>)",
-          "success-bg": "hsl(var(--status-success-bg))",
-          warning: "hsl(var(--status-warning) / <alpha-value>)",
-          "warning-bg": "hsl(var(--status-warning-bg))",
-          danger: "hsl(var(--status-danger) / <alpha-value>)",
-          "danger-bg": "hsl(var(--status-danger-bg))",
+        red: {
+          DEFAULT: "hsl(var(--red) / <alpha-value>)",
+          dim: "hsl(var(--red-dim))",
+        },
+        amber: {
+          DEFAULT: "hsl(var(--amber) / <alpha-value>)",
+          dim: "hsl(var(--amber-dim))",
         },
       },
       fontFamily: {
-        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
-        mono: ["JetBrains Mono", "Fira Code", "monospace"],
-        display: ["Oswald", "Barlow Condensed", "Impact", "sans-serif"],
+        sans: ["Poppins", "system-ui", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
-      boxShadow: {
-        glow: "0 0 24px -4px var(--brand-glow)",
-        card: "0 4px 20px -2px rgba(0, 0, 0, 0.2)",
-        sheet: "0 -8px 32px -4px rgba(0, 0, 0, 0.3)",
+      borderRadius: {
+        xl: "12px",
+        "2xl": "16px",
+        "3xl": "20px",
       },
       animation: {
-        "pulse-subtle": "pulseSubtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "fade-in": "fadeIn 150ms cubic-bezier(0.16, 1, 0.3, 1)",
-        "slide-up": "slideUp 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "fade-in": "fadeIn 0.25s ease-out",
+        "slide-up": "slideUp 0.3s ease-out",
+        "pulse-dot": "pulseDot 2s ease-in-out infinite",
       },
       keyframes: {
-        pulseSubtle: {
-          "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.4" },
-        },
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { transform: "translateY(12px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
+        fadeIn: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        slideUp: { "0%": { opacity: "0", transform: "translateY(12px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        pulseDot: { "0%,100%": { opacity: "1" }, "50%": { opacity: "0.4" } },
       },
     },
   },
   plugins: [],
-};
-
-export default config;
+} satisfies Config;

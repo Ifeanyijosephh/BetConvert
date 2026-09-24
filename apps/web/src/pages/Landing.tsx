@@ -1,75 +1,67 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Zap, ShieldCheck, Trophy, ArrowRight, Sparkles } from "lucide-react";
-import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
+import { Zap, CheckCircle2, TrendingUp, ArrowRight } from "lucide-react";
 
-export const Landing: React.FC = () => {
-  return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-16 flex flex-col items-center text-center gap-8 pb-24">
-      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/10 border border-brand/20 text-brand text-xs font-bold uppercase tracking-wider">
-        <Sparkles className="w-3.5 h-3.5" />
-        #1 Booking Code Converter in Nigeria
+export const Landing: React.FC = () => (
+  <div className="min-h-screen bg-app flex flex-col relative overflow-hidden">
+    {/* Stadium glow backdrop */}
+    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,230,118,0.08)_0%,_transparent_60%)]" />
+    <div className="absolute top-0 inset-x-0 h-72 bg-gradient-to-b from-green/5 to-transparent" />
+
+    {/* Top bar */}
+    <div className="relative z-10 flex items-center justify-between px-5 pt-5">
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 rounded-lg bg-green flex items-center justify-center">
+          <span className="text-xs font-black text-green-fg">BF</span>
+        </div>
+        <span className="font-bold text-sm tracking-tight">BET<span className="text-green">FORGE</span></span>
       </div>
-
-      <div className="flex flex-col gap-3 max-w-2xl">
-        <h1 className="font-display font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-text-primary leading-none">
-          Convert Any Bet Code <br />
-          <span className="text-brand">In Under 10 Seconds</span>
-        </h1>
-        <p className="text-sm md:text-base text-text-secondary max-w-lg mx-auto">
-          SportyBet ➔ Bet9ja ➔ 1xBet. Paste your accumulator booking code, select your target platform, and get your new slip instantly.
-        </p>
-      </div>
-
-      <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
-        <Link to="/converter" className="w-full">
-          <Button size="lg" className="w-full" rightIcon={<ArrowRight className="w-4 h-4" />}>
-            Start Converting
-          </Button>
-        </Link>
-        <Link to="/register" className="w-full">
-          <Button size="lg" variant="secondary" className="w-full">
-            Create Account
-          </Button>
-        </Link>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-6">
-        <Card className="flex flex-col items-center gap-2 p-5 text-center">
-          <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand mb-1">
-            <Zap className="w-5 h-5" />
-          </div>
-          <h3 className="font-display font-bold text-base uppercase text-text-primary">Instant Accuracy</h3>
-          <p className="text-xs text-text-secondary">
-            Our 3-layer matching engine reconciles team names, leagues, and market variations seamlessly.
-          </p>
-        </Card>
-
-        <Card className="flex flex-col items-center gap-2 p-5 text-center">
-          <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand mb-1">
-            <ShieldCheck className="w-5 h-5" />
-          </div>
-          <h3 className="font-display font-bold text-base uppercase text-text-primary">Append-Only Wallet</h3>
-          <p className="text-xs text-text-secondary">
-            Fund your dedicated bank account anytime. Transparent ledger tracking with zero hidden deductions.
-          </p>
-        </Card>
-
-        <Card className="flex flex-col items-center gap-2 p-5 text-center">
-          <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand mb-1">
-            <Trophy className="w-5 h-5" />
-          </div>
-          <h3 className="font-display font-bold text-base uppercase text-text-primary">Live Match Center</h3>
-          <p className="text-xs text-text-secondary">
-            Keep track of live match scores and odds changes as your accumulator unfolds.
-          </p>
-        </Card>
-      </div>
-
-      <footer className="pt-8 text-center text-xs text-text-muted border-t border-border-subtle w-full">
-        <p>BetConvert is an independent conversion utility and is not affiliated with SportyBet, Bet9ja, 1xBet, or any other bookmaker.</p>
-      </footer>
     </div>
-  );
-};
+
+    {/* Hero */}
+    <div className="relative z-10 flex-1 flex flex-col justify-center px-5 pb-8 pt-12">
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green mb-3">Booking Code Converter</p>
+      <h1 className="font-extrabold text-[2.15rem] leading-[1.15] tracking-tight text-t-primary mb-3">
+        Convert Any<br />Booking Code<br />in Seconds
+      </h1>
+      <p className="text-sm text-t-secondary leading-relaxed mb-8 max-w-xs">
+        Move your selections between Nigeria&apos;s leading bookmakers — fast, accurate and secure.
+      </p>
+
+      <Link to="/converter">
+        <button className="btn-green w-full max-w-xs h-14 rounded-xl text-sm flex items-center justify-center gap-2">
+          CONVERT A CODE <ArrowRight className="w-4 h-4" />
+        </button>
+      </Link>
+
+      {/* Feature pills */}
+      <div className="mt-10 flex flex-col gap-3 max-w-xs">
+        <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-t-muted mb-1">Built for Matchday</p>
+        {[
+          { icon: Zap, title: "Instant conversion", desc: "Codes rebuilt in seconds" },
+          { icon: CheckCircle2, title: "Slip validation", desc: "See every passed selection" },
+          { icon: TrendingUp, title: "Best odds", desc: "Compare value before kickoff" },
+        ].map(({ icon: Icon, title, desc }) => (
+          <div key={title} className="flex items-start gap-3 bg-surface border border-border rounded-xl p-3.5">
+            <div className="w-8 h-8 rounded-lg bg-green-dim flex items-center justify-center shrink-0">
+              <Icon className="w-4 h-4 text-green" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-t-primary">{title}</p>
+              <p className="text-xs text-t-muted">{desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Bookmaker strip */}
+    <div className="relative z-10 px-5 pb-8">
+      <div className="flex items-center gap-3 flex-wrap">
+        {["BET9JA", "SPORTYBET", "1XBET", "BETKING"].map((b) => (
+          <span key={b} className="text-[10px] font-bold tracking-widest text-t-muted">{b}</span>
+        ))}
+      </div>
+    </div>
+  </div>
+);

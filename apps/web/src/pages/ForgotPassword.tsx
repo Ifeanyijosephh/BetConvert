@@ -1,79 +1,50 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Card } from "../components/ui/Card";
+import { CheckCircle2 } from "lucide-react";
 import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
 import { requestPasswordReset } from "../lib/api";
-import { forgotPasswordSchema } from "@betconvert/shared/src/validators";
-import { CheckCircle2 } from "lucide-react";
+import { forgotPasswordSchema } from "@betconvert/shared";
 
 export const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    const validation = forgotPasswordSchema.safeParse({ email });
-    if (!validation.success) {
-      setError(validation.error.errors[0]?.message || "Invalid email");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      await requestPasswordReset(email);
-      setIsSubmitted(true);
-    } catch (err: any) {
-      setError(err.message || "Failed to request password reset");
-    } finally {
-      setIsLoading(false);
-    }
+    const v = forgotPasswordSchema.safeParse({ email });
+    if (!v.success) { setError(v.error.errors[0]?.message || "Invalid email"); return; }
+    setLoading(true);
+    try { await requestPasswordReset(email); setDone(true); }
+    catch (err: any) { setError(err.message || "Failed to send reset link"); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-4 py-12 flex flex-col gap-4 pb-20">
-      <div className="text-center">
-        <h1 className="font-display font-bold text-2xl uppercase tracking-tight text-text-primary">
-          Reset <span className="text-brand">Password</span>
-        </h1>
-        <p className="text-xs text-text-secondary">Enter your email for a secure reset link</p>
-      </div>
+    <div className="min-h-[100dvh] bg-app flex flex-col px-5 pt-8 pb-10 max-w-lg mx-auto">
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-green mb-2">Account Recovery</p>
+      <h1 className="font-extrabold text-2xl text-t-primary mb-1">Reset your password</h1>
+      <p className="text-sm text-t-secondary mb-8">Enter the email linked to your account and we&apos;ll send a secure reset link.</p>
 
-      <Card>
-        {isSubmitted ? (
-          <div className="flex flex-col items-center gap-3 text-center py-4">
-            <CheckCircle2 className="w-12 h-12 text-status-success" />
-            <h2 className="font-display font-bold text-base uppercase text-text-primary">Check Your Email</h2>
-            <p className="text-xs text-text-secondary">We have sent a password reset link to {email}.</p>
-            <Link to="/login" className="w-full mt-2">
-              <Button variant="secondary" className="w-full">Back to Sign In</Button>
-            </Link>
+      {done ? (
+        <div className="flex flex-col items-center gap-4 py-10 text-center animate-fade-in">
+          <div className="w-14 h-14 rounded-full bg-green-dim flex items-center justify-center">
+            <CheckCircle2 className="w-7 h-7 text-green" />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={error || undefined}
-              placeholder="you@example.com"
-            />
-            <Button type="submit" size="lg" isLoading={isLoading} className="w-full mt-2">
-              Send Reset Link
-            </Button>
-            <div className="text-center mt-2">
-              <Link to="/login" className="text-xs text-text-secondary hover:text-brand">
-                Back to Sign In
-              </Link>
-            </div>
-          </form>
-        )}
-      </Card>
+          <h2 className="font-bold text-lg">Check your inbox</h2>
+          <p className="text-sm text-t-secondary">Reset instructions sent to<br /><span className="text-t-primary font-medium">{email}</span></p>
+          <Link to="/login" className="w-full mt-4"><Button variant="secondary" size="lg">Back to Sign In</Button></Link>
+        </div>
+      ) : (
+        <form onSubmit={submit} className="flex flex-col gap-4">
+          <Input label="Email Address" type="email" value={email} onChange={(e) => setEmail(e.target.value)} error={error || undefined} placeholder="you@email.com" />
+          <Button type="submit" size="lg" isLoading={loading}>Send Reset Link</Button>
+          <Link to="/login"><Button type="button" variant="outline" size="lg">Back to Sign In</Button></Link>
+        </form>
+      )}
     </div>
   );
 };
