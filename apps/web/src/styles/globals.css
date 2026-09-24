@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-app: 220 20% 97%;
+    --bg-surface: 0 0% 100%;
+    --bg-surface-subtle: 220 14% 94%;
+    --border-subtle: 220 13% 88%;
+    --border-strong: 220 13% 76%;
+    
+    --text-primary: 222 47% 11%;
+    --text-secondary: 215 16% 47%;
+    --text-muted: 215 16% 65%;
+
+    --brand-primary: 158 84% 39%;
+    --brand-primary-hover: 160 84% 33%;
+    --brand-primary-fg: 0 0% 100%;
+    --brand-glow: 158 84% 39% / 0.15;
+
+    --status-success: 158 84% 39%;
+    --status-success-bg: 158 84% 39% / 0.1;
+    --status-warning: 38 92% 50%;
+    --status-warning-bg: 38 92% 50% / 0.1;
+    --status-danger: 0 84% 60%;
+    --status-danger-bg: 0 84% 60% / 0.1;
+  }
+
+  .dark {
+    --bg-app: 222 47% 6%;
+    --bg-surface: 222 40% 10%;
+    --bg-surface-subtle: 222 35% 14%;
+    --border-subtle: 222 25% 18%;
+    --border-strong: 222 25% 28%;
+    
+    --text-primary: 210 40% 98%;
+    --text-secondary: 215 20% 70%;
+    --text-muted: 215 15% 45%;
+
+    --brand-primary: 158 84% 45%;
+    --brand-primary-hover: 158 84% 52%;
+    --brand-primary-fg: 222 47% 6%;
+    --brand-glow: 158 84% 45% / 0.25;
+
+    --status-success: 158 84% 45%;
+    --status-success-bg: 158 84% 45% / 0.15;
+    --status-warning: 45 93% 58%;
+    --status-warning-bg: 45 93% 58% / 0.15;
+    --status-danger: 0 84% 65%;
+    --status-danger-bg: 0 84% 65% / 0.15;
+  }
+}
+
+html, body {
+  @apply bg-app text-text-primary antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background-color: hsl(var(--brand-primary));
+  color: hsl(var(--brand-primary-fg));
+}

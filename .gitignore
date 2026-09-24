@@ -1,0 +1,13 @@
+# Environment secrets — NEVER commit
+.env
+.env.local
+.env.production
+apps/web/.env
+apps/web/.env.local
+apps/worker/.env
+apps/worker/.env.local
+
+# Allow the example template
+!.env.example
+!apps/web/.env.example
+!apps/worker/.env.example

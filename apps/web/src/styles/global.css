@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* LIGHT MODE TOKENS */
+    --bg-app: 220 20% 97%;              /* #F5F7FA */
+    --bg-surface: 0 0% 100%;            /* #FFFFFF */
+    --bg-surface-subtle: 220 14% 94%;   /* #ECEFF3 */
+    --border-subtle: 220 13% 88%;       /* #D8DEE6 */
+    --border-strong: 220 13% 76%;       /* #B6C0CD */
+    
+    --text-primary: 222 47% 11%;        /* #0F172A */
+    --text-secondary: 215 16% 47%;      /* #64748B */
+    --text-muted: 215 16% 65%;          /* #94A3B8 */
+
+    /* BRAND / ACCENT (Direction A: Electric Pitch) */
+    --brand-primary: 158 84% 39%;       /* #10B981 */
+    --brand-primary-hover: 160 84% 33%; /* #059669 */
+    --brand-primary-fg: 0 0% 100%;      /* #FFFFFF */
+    --brand-glow: 158 84% 39% / 0.15;
+
+    /* STATUS COLORS */
+    --status-success: 158 84% 39%;      /* Emerald */
+    --status-success-bg: 158 84% 39% / 0.1;
+    --status-warning: 38 92% 50%;       /* Amber */
+    --status-warning-bg: 38 92% 50% / 0.1;
+    --status-danger: 0 84% 60%;         /* Coral Red */
+    --status-danger-bg: 0 84% 60% / 0.1;
+  }
+
+  .dark {
+    /* DARK MODE TOKENS (Default) */
+    --bg-app: 222 47% 6%;               /* #080C14 */
+    --bg-surface: 222 40% 10%;          /* #0F1623 */
+    --bg-surface-subtle: 222 35% 14%;   /* #162032 */
+    --border-subtle: 222 25% 18%;       /* #202D42 */
+    --border-strong: 222 25% 28%;       /* #334460 */
+    
+    --text-primary: 210 40% 98%;        /* #F8FAFC */
+    --text-secondary: 215 20% 70%;      /* #94A3B8 */
+    --text-muted: 215 15% 45%;          /* #475569 */
+
+    /* BRAND / ACCENT */
+    --brand-primary: 158 84% 45%;       /* #10B981 Vivid */
+    --brand-primary-hover: 158 84% 52%; /* #34D399 */
+    --brand-primary-fg: 222 47% 6%;     /* #080C14 */
+    --brand-glow: 158 84% 45% / 0.25;
+
+    /* STATUS COLORS */
+    --status-success: 158 84% 45%;
+    --status-success-bg: 158 84% 45% / 0.15;
+    --status-warning: 45 93% 58%;
+    --status-warning-bg: 45 93% 58% / 0.15;
+    --status-danger: 0 84% 65%;
+    --status-danger-bg: 0 84% 65% / 0.15;
+  }
+}
+
+/* Base resets for mobile-app feeling */
+html, body {
+  @apply bg-app text-text-primary antialiased selection:bg-brand-primary selection:text-brand-primary-fg;
+  -webkit-tap-highlight-color: transparent;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Prevent layout shift from iOS Safari bottom toolbars */
+.mobile-viewport {
+  min-height: 100dvh;
+}
