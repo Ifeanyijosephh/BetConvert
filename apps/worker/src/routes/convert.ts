@@ -1,26 +1,34 @@
-import { Router } from "express";
-import { z } from "zod";
-import { runConversion } from "../engine/pipeline";
+import { Router, Response } from "express";
+import { AuthenticatedRequest, requireAuth } from "../middlewares/auth";
+import { convertRequestSchema } from "@betconvert/shared";
+import { processConversion } from "../engine/pipeline";
 
 export const convertRouter = Router();
 
-const convertRequestSchema = z.object({
-  userId: z.string().uuid().optional(),
-  sourceBookmaker: z.enum(["sportybet", "bet9ja", "xbet"]),
-  sourceCode: z.string().min(3).max(50),
-  destBookmaker: z.enum(["sportybet", "bet9ja", "xbet"]),
-});
-
-convertRouter.post("/", async (req, res, next) => {
+convertRouter.post("/", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const parsed = convertRequestSchema.safeParse(req.body);
-    if (!parsed.success) {
-      res.status(400).json({ error: "Invalid request", details: parsed.error.flatten() });
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ error: "Unauthorized access" });
       return;
     }
-    const result = await runConversion(parsed.data);
-    res.json(result);
-  } catch (err) {
-    next(err);
+
+    // Zod Validation from @betconvert/shared
+    const parsed = convertRequestSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: "Invalid request payload", details: parsed.error.issues });
+      return;
+    }
+
+    // Pass to Engine Pipeline
+    const result = await processConversion(userId, parsed.data);
+
+    res.status(200).json({
+      success: true,
+      message: "Conversion successful",
+      data: result
+    });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err.message });
   }
 });

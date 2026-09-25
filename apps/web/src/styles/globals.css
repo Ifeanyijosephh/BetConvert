@@ -1,100 +1,84 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --bg-app: 0 0% 4%;
-    --bg-surface: 0 0% 8%;
-    --bg-surface-2: 0 0% 11%;
-    --bg-input: 0 0% 10%;
-    --border: 0 0% 16%;
-    --border-focus: 150 100% 45%;
+html { scroll-behavior: smooth; }
 
-    --text-primary: 0 0% 98%;
-    --text-secondary: 0 0% 62%;
-    --text-muted: 0 0% 40%;
+body {
+  background-color: #0A0A0B !important;
+  color: #FFFFFF !important;
+  font-family: 'Poppins', sans-serif !important;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-    --green: 150 100% 45%;
-    --green-dim: 150 100% 45% / 0.12;
-    --green-hover: 150 100% 40%;
-    --green-fg: 0 0% 4%;
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0A0A0B; }
+::-webkit-scrollbar-thumb { background: #00FF66; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #00E05A; }
 
-    --red: 0 85% 60%;
-    --red-dim: 0 85% 60% / 0.12;
-    --amber: 38 95% 55%;
-    --amber-dim: 38 95% 55% / 0.12;
+@layer utilities {
+  .bg-app { background-color: #0A0A0B !important; }
+  .bg-surface { background-color: #161618 !important; }
+  .text-brand-neon { color: #00FF66 !important; }
+  .bg-brand-neon { background-color: #00FF66 !important; }
+  .border-brand-neon { border-color: #00FF66 !important; }
+  .text-text-primary { color: #FFFFFF !important; }
+  .text-text-secondary { color: #A1A1AA !important; }
+  .shadow-brand-neon { box-shadow: 0 4px 15px -3px rgba(0, 255, 102, 0.2) !important; }
+
+  /* Hide scrollbars completely while preserving swipe & touch scroll */
+  .no-scrollbar {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
   }
-
-  .dark {
-    --bg-app: 0 0% 4%;
-    --bg-surface: 0 0% 8%;
-    --bg-surface-2: 0 0% 11%;
-    --bg-input: 0 0% 10%;
-    --border: 0 0% 16%;
-    --border-focus: 150 100% 45%;
-    --text-primary: 0 0% 98%;
-    --text-secondary: 0 0% 62%;
-    --text-muted: 0 0% 40%;
-    --green: 150 100% 45%;
-    --green-dim: 150 100% 45% / 0.12;
-    --green-hover: 150 100% 40%;
-    --green-fg: 0 0% 4%;
-    --red: 0 85% 60%;
-    --red-dim: 0 85% 60% / 0.12;
-    --amber: 38 95% 55%;
-    --amber-dim: 38 95% 55% / 0.12;
-  }
-
-  /* Light mode (toggle) */
-  html:not(.dark) {
-    --bg-app: 0 0% 97%;
-    --bg-surface: 0 0% 100%;
-    --bg-surface-2: 0 0% 95%;
-    --bg-input: 0 0% 96%;
-    --border: 0 0% 88%;
-    --border-focus: 150 100% 35%;
-    --text-primary: 0 0% 8%;
-    --text-secondary: 0 0% 40%;
-    --text-muted: 0 0% 55%;
-    --green: 150 100% 35%;
-    --green-dim: 150 100% 35% / 0.1;
-    --green-hover: 150 100% 30%;
-    --green-fg: 0 0% 100%;
-    --red: 0 85% 50%;
-    --red-dim: 0 85% 50% / 0.1;
-    --amber: 38 95% 45%;
-    --amber-dim: 38 95% 45% / 0.1;
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 }
 
-html, body {
-  font-family: "Poppins", system-ui, sans-serif;
-  background: hsl(var(--bg-app));
-  color: hsl(var(--text-primary));
-  -webkit-tap-highlight-color: transparent;
-  antialiased: true;
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover,
+.animate-marquee:active,
+.animate-marquee.is-paused {
+  animation-play-state: paused;
 }
 
-::selection {
-  background: hsl(var(--green));
-  color: hsl(var(--green-fg));
+/* Dual-mode marquee track: auto-scrolls + allows drag/swipe */
+.chip-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 0.5rem;
+  animation: marquee 32s linear infinite;
+  will-change: transform;
+}
+.chip-marquee-viewport:hover .chip-marquee-track,
+.chip-marquee-viewport:focus-within .chip-marquee-track,
+.chip-marquee-viewport.is-dragging .chip-marquee-track {
+  animation-play-state: paused;
 }
 
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
-
-/* Neon green button */
-.btn-green {
-  background: hsl(var(--green));
-  color: hsl(var(--green-fg));
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  transition: all 0.15s ease;
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-.btn-green:hover { background: hsl(var(--green-hover)); }
-.btn-green:active { transform: scale(0.98); }
-.btn-green:disabled { opacity: 0.4; pointer-events: none; }
+.animate-fade-up { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-fade-up-delay-1 { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both; }
+.animate-fade-up-delay-2 { animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both; }
+
+.pressable { transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease; }
+.pressable:active { transform: scale(0.96); }
+
+.card-lift { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease; }
+.card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); }

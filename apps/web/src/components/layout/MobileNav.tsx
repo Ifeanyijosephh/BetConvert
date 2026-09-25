@@ -1,36 +1,57 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { Zap, History, BarChart3, Wallet, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { LayoutDashboard, ArrowLeftRight, History, Wallet, User, Trophy } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
-const items = [
-  { to: "/converter", label: "Convert", icon: Zap },
-  { to: "/history", label: "History", icon: History },
-  { to: "/scores", label: "Scores", icon: BarChart3 },
-  { to: "/wallet", label: "Wallet", icon: Wallet },
-  { to: "/account", label: "Account", icon: User },
-];
+export const MobileNav: React.FC = () => {
+  const { user } = useAuth();
+  const location = useLocation();
 
-export const MobileNav: React.FC = () => (
-  <nav className="fixed bottom-0 inset-x-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border pb-[env(safe-area-inset-bottom,0px)]">
-    <div className="max-w-lg mx-auto grid grid-cols-5 h-14">
-      {items.map(({ to, label, icon: Icon }) => (
-        <NavLink
-          key={to}
-          to={to}
-          className={({ isActive }) =>
-            `flex flex-col items-center justify-center gap-0.5 text-[9px] font-semibold tracking-wide transition-colors ${
-              isActive ? "text-green" : "text-t-muted hover:text-t-secondary"
-            }`
-          }
-        >
-          {({ isActive }) => (
-            <>
-              <Icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 1.75} />
-              <span>{label}</span>
-            </>
-          )}
-        </NavLink>
-      ))}
+  const isActive = (path: string) => location.pathname === path;
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0A0A0B]/92 backdrop-blur-[40px] border-t border-white/10 px-2 py-2.5 flex justify-around items-center shadow-[0_-12px_40px_rgba(0,0,0,0.65)] animate-dock-in safe-bottom">
+      {user ? (
+        <>
+          <NavItem to="/dashboard" active={isActive("/dashboard")} icon={<LayoutDashboard className="w-6 h-6" strokeWidth={2.25} />} label="Overview" />
+          <NavItem to="/convert" active={isActive("/convert")} icon={<ArrowLeftRight className="w-6 h-6" strokeWidth={2.25} />} label="Convert" />
+          <NavItem to="/history" active={isActive("/history")} icon={<History className="w-6 h-6" strokeWidth={2.25} />} label="History" />
+          <NavItem to="/wallet" active={isActive("/wallet")} icon={<Wallet className="w-6 h-6" strokeWidth={2.25} />} label="Wallet" />
+          <NavItem to="/account" active={isActive("/account")} icon={<User className="w-6 h-6" strokeWidth={2.25} />} label="Account" />
+        </>
+      ) : (
+        <>
+          <NavItem to="/" active={isActive("/")} icon={<LayoutDashboard className="w-6 h-6" strokeWidth={2.25} />} label="Home" />
+          <NavItem to="/scores" active={isActive("/scores")} icon={<Trophy className="w-6 h-6" strokeWidth={2.25} />} label="Scores" />
+          <NavItem to="/login" active={isActive("/login")} icon={<User className="w-6 h-6" strokeWidth={2.25} />} label="Sign In" />
+        </>
+      )}
     </div>
-  </nav>
-);
+  );
+};
+
+function NavItem({
+  to,
+  active,
+  icon,
+  label,
+}: {
+  to: string;
+  active: boolean;
+  icon: React.ReactNode;
+  label: string;
+}) {
+  return (
+    <Link
+      to={to}
+      className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all duration-200 pressable ${
+        active
+          ? "text-brand-neon font-black scale-110 drop-shadow-[0_0_10px_rgba(0,255,102,0.85)]"
+          : "text-white font-semibold hover:text-brand-neon"
+      }`}
+    >
+      {icon}
+      <span className="text-[10px] tracking-wide">{label}</span>
+    </Link>
+  );
+}

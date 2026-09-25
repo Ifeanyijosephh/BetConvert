@@ -1,10 +1,11 @@
-import { useAuth } from "./useAuth";
+import { useAuth } from "../context/AuthContext";
 
 export function useWallet() {
-  const { balance, refreshUserData } = useAuth();
+  const { balance, refreshProfile, refreshUserData } = useAuth();
   return {
     balance,
-    rateNaira: 200,
-    refreshBalance: refreshUserData,
+    credits: balance,
+    refreshWallet: refreshProfile || refreshUserData,
+    refreshUserData: refreshProfile || refreshUserData,
   };
 }

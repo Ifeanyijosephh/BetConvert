@@ -1,4 +1,7 @@
-export async function matchSelections(selections, _destinationAdapter) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.matchSelections = matchSelections;
+async function matchSelections(selections, _destinationAdapter) {
     return selections.map((sel) => ({
         original: sel,
         destinationFixtureId: "matched-fx-1",

@@ -1,9 +1,12 @@
-import { sanitizeBookingCode } from "./types";
-export class XBetAdapter {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.XBetAdapter = void 0;
+const types_1 = require("./types");
+class XBetAdapter {
     code = "xbet";
     displayName = "1xBet";
     async fetchSlip(code) {
-        code = sanitizeBookingCode(code);
+        code = (0, types_1.sanitizeBookingCode)(code);
         return {
             sourceBookmaker: this.code,
             sourceCode: code,
@@ -21,3 +24,4 @@ export class XBetAdapter {
         return [];
     }
 }
+exports.XBetAdapter = XBetAdapter;

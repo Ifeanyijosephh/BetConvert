@@ -1,5 +1,8 @@
-import { logger } from "./logger";
-export class CircuitBreaker {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.circuitBreaker = exports.CircuitBreaker = void 0;
+const logger_1 = require("./logger");
+class CircuitBreaker {
     failureThreshold;
     cooldownMs;
     circuits = new Map();
@@ -39,11 +42,12 @@ export class CircuitBreaker {
         c.lastFailureAt = Date.now();
         if (c.failures >= this.failureThreshold) {
             c.state = "open";
-            logger.error({ bookmaker: key }, "Circuit breaker opened");
+            logger_1.logger.error({ bookmaker: key }, "Circuit breaker opened");
         }
     }
     getState(key) {
         return this.getCircuit(key).state;
     }
 }
-export const circuitBreaker = new CircuitBreaker(5, 60_000);
+exports.CircuitBreaker = CircuitBreaker;
+exports.circuitBreaker = new CircuitBreaker(5, 60_000);

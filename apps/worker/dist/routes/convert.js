@@ -1,24 +1,33 @@
-import { Router } from "express";
-import { z } from "zod";
-import { runConversion } from "../engine/pipeline";
-export const convertRouter = Router();
-const convertRequestSchema = z.object({
-    userId: z.string().uuid().optional(),
-    sourceBookmaker: z.enum(["sportybet", "bet9ja", "xbet"]),
-    sourceCode: z.string().min(3).max(50),
-    destBookmaker: z.enum(["sportybet", "bet9ja", "xbet"]),
-});
-convertRouter.post("/", async (req, res, next) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.convertRouter = void 0;
+const express_1 = require("express");
+const auth_1 = require("../middlewares/auth");
+const shared_1 = require("@betconvert/shared");
+const pipeline_1 = require("../engine/pipeline");
+exports.convertRouter = (0, express_1.Router)();
+exports.convertRouter.post("/", auth_1.requireAuth, async (req, res) => {
     try {
-        const parsed = convertRequestSchema.safeParse(req.body);
-        if (!parsed.success) {
-            res.status(400).json({ error: "Invalid request", details: parsed.error.flatten() });
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ error: "Unauthorized access" });
             return;
         }
-        const result = await runConversion(parsed.data);
-        res.json(result);
+        // Zod Validation from @betconvert/shared
+        const parsed = shared_1.convertRequestSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: "Invalid request payload", details: parsed.error.issues });
+            return;
+        }
+        // Pass to Engine Pipeline
+        const result = await (0, pipeline_1.processConversion)(userId, parsed.data);
+        res.status(200).json({
+            success: true,
+            message: "Conversion successful",
+            data: result
+        });
     }
     catch (err) {
-        next(err);
+        res.status(400).json({ success: false, error: err.message });
     }
 });

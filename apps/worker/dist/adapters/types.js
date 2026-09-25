@@ -1,4 +1,8 @@
-export class AdapterError extends Error {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AdapterError = void 0;
+exports.sanitizeBookingCode = sanitizeBookingCode;
+class AdapterError extends Error {
     code;
     bookmaker;
     retryable;
@@ -10,7 +14,8 @@ export class AdapterError extends Error {
         this.name = "AdapterError";
     }
 }
-export function sanitizeBookingCode(code) {
+exports.AdapterError = AdapterError;
+function sanitizeBookingCode(code) {
     const sanitized = code.trim().toUpperCase();
     if (!/^[A-Z0-9\-_]+$/.test(sanitized)) {
         throw new AdapterError("invalid_code", "Booking code contains invalid characters", "system", false);

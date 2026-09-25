@@ -1,4 +1,7 @@
-export class TTLCache {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.aliasCache = exports.TTLCache = void 0;
+class TTLCache {
     defaultTtlMs;
     store = new Map();
     constructor(defaultTtlMs = 15 * 60 * 1000) {
@@ -21,4 +24,5 @@ export class TTLCache {
         });
     }
 }
-export const aliasCache = new TTLCache(60 * 60 * 1000);
+exports.TTLCache = TTLCache;
+exports.aliasCache = new TTLCache(60 * 60 * 1000);

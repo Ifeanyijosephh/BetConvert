@@ -1,9 +1,9 @@
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 import { config } from "../config";
 
-export const supabaseAdmin: SupabaseClient = createClient(
-  config.SUPABASE_URL,
-  config.SUPABASE_SERVICE_ROLE_KEY,
+export const supabaseAdmin = createClient(
+  config.supabaseUrl,
+  config.supabaseServiceKey || "placeholder-key",
   {
     auth: {
       autoRefreshToken: false,

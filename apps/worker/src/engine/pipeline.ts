@@ -1,69 +1,61 @@
-import { createHash, randomUUID } from "node:crypto";
-import { logger } from "../infra/logger";
-import { supabaseAdmin } from "../infra/supabase";
-import { circuitBreaker } from "../infra/circuitBreaker";
-import { getAdapter } from "../adapters/registry";
-import { AdapterError } from "../adapters/types";
-import { matchSelections } from "./matcher";
-import { ConversionResult } from "./types";
+import { supabaseAdmin } from "../lib/supabase";
+import { extractSlip, buildSlip } from "./adapters";
+import { ConvertRequestInput } from "@betconvert/shared";
 
-export interface ConversionRequest {
-  userId?: string;
-  sourceBookmaker: string;
-  sourceCode: string;
-  destBookmaker: string;
-}
+export const processConversion = async (userId: string, input: ConvertRequestInput) => {
+  const { fromBookmaker, toBookmaker, bookingCode } = input;
 
-function makeIdempotencyKey(req: ConversionRequest): string {
-  const raw = `${req.userId || "anon"}:${req.sourceBookmaker}:${req.sourceCode}:${req.destBookmaker}`;
-  return createHash("sha256").update(raw).digest("hex");
-}
+  // 1. Attempt to deduct 1 credit (or use daily free limit) via secure Postgres RPC
+  const { data: debitSuccess, error: debitError } = await supabaseAdmin.rpc("debit_for_conversion", {
+    p_user_id: userId
+  });
 
-export async function runConversion(req: ConversionRequest): Promise<ConversionResult> {
-  const log = logger.child({ source: req.sourceBookmaker, dest: req.destBookmaker, code: req.sourceCode });
-
-  if (!circuitBreaker.canProceed(req.sourceBookmaker) || !circuitBreaker.canProceed(req.destBookmaker)) {
-    return {
-      success: false,
-      status: "failed",
-      destinationCode: null,
-      matched: 0,
-      total: 0,
-      selections: [],
-      errorMessage: "Service temporarily unavailable. Please retry in a moment.",
-    };
+  if (debitError || !debitSuccess) {
+    throw new Error("Insufficient credits or free daily limit reached. Please top up your wallet.");
   }
 
-  const conversionId = randomUUID();
-  const idempotencyKey = makeIdempotencyKey(req);
+  let sourceSlip;
+  let targetCode;
 
   try {
-    const sourceAdapter = getAdapter(req.sourceBookmaker);
-    const destAdapter = getAdapter(req.destBookmaker);
+    // 2. Extract matches from source bookmaker
+    sourceSlip = await extractSlip(fromBookmaker, bookingCode);
 
-    const sourceSlip = await sourceAdapter.fetchSlip(req.sourceCode);
-    const matched = await matchSelections(sourceSlip.selections, destAdapter);
-    const destResult = await destAdapter.createSlip(matched);
+    // 3. Map to target bookmaker and generate new code
+    targetCode = await buildSlip(toBookmaker, sourceSlip.selections);
 
-    return {
-      success: true,
-      status: "success",
-      destinationCode: destResult.code,
-      matched: matched.length,
-      total: matched.length,
-      selections: matched,
-    };
-  } catch (err) {
-    const msg = err instanceof AdapterError ? err.message : "Conversion failed";
-    log.error({ error: msg }, "Conversion error");
-    return {
-      success: false,
-      status: "failed",
-      destinationCode: null,
-      matched: 0,
-      total: 0,
-      selections: [],
-      errorMessage: msg,
-    };
+  } catch (err: any) {
+    // If the engine fails (e.g. invalid code), refund the user immediately!
+    await supabaseAdmin.rpc("refund_conversion", { p_user_id: userId });
+    throw new Error(err.message || "Failed to process booking code across platforms.");
   }
-}
+
+  // 4. Log successful conversion securely into the database
+  const conversionRecord = {
+    user_id: userId,
+    from_bookmaker: fromBookmaker,
+    to_bookmaker: toBookmaker,
+    source_code: bookingCode.toUpperCase(),
+    target_code: targetCode,
+    status: "success",
+    selections_count: sourceSlip.selections.length,
+    matched_count: sourceSlip.selections.length, // Simulating 100% match for now
+  };
+
+  const { data: insertedRecord, error: insertError } = await supabaseAdmin
+    .from("conversions")
+    .insert(conversionRecord)
+    .select()
+    .single();
+
+  if (insertError) {
+    console.error("Failed to log conversion history:", insertError);
+  }
+
+  return {
+    targetCode,
+    selectionsCount: sourceSlip.selections.length,
+    matchedCount: sourceSlip.selections.length,
+    recordId: insertedRecord?.id
+  };
+};

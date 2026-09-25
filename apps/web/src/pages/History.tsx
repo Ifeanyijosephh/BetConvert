@@ -1,100 +1,64 @@
 import React, { useEffect, useState } from "react";
-import { Card } from "../components/ui/Card";
-import { Badge } from "../components/ui/Badge";
-import { Button } from "../components/ui/Button";
-import { Copy, Check, History as HistoryIcon } from "lucide-react";
-import { supabase } from "../lib/supabase";
-import { useAuth } from "../hooks/useAuth";
+import { History as HistoryIcon, ArrowRight, Copy, Check } from "lucide-react";
+import { fetchConversionHistory } from "../lib/api";
+import type { ConversionRecord } from "@betconvert/shared";
 
-interface ConversionHistoryItem {
-  id: string;
-  source_bookmaker: string;
-  source_code: string;
-  dest_bookmaker: string;
-  dest_code: string | null;
-  status: "success" | "partial" | "failed";
-  selections_matched: number;
-  selections_total: number;
-  created_at: string;
-}
-
-export const History: React.FC = () => {
-  const { user } = useAuth();
-  const [history, setHistory] = useState<ConversionHistoryItem[]>([]);
+export const HistoryPage: React.FC = () => {
+  const [history, setHistory] = useState<ConversionRecord[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user) return;
-    supabase
-      .from("conversions")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .then(({ data }: { data: any }) => {
-        if (data) setHistory(data as ConversionHistoryItem[]);
-      });
-  }, [user]);
+    fetchConversionHistory().then(setHistory);
+  }, []);
 
-  const handleCopy = (id: string, code: string) => {
+  const handleCopy = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 py-6 flex flex-col gap-6 pb-24">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display font-extrabold text-2xl uppercase tracking-tight text-text-primary">
-            Conversion <span className="gradient-text">History</span>
-          </h1>
-          <p className="text-xs text-text-secondary mt-0.5">Your past converted slips and booking codes</p>
+    <div className="min-h-screen bg-app pt-24 pb-28 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
+      <div>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon text-xs font-bold mb-2">
+          <HistoryIcon className="w-3.5 h-3.5" /> Order Logs
         </div>
+        <h1 className="text-3xl font-extrabold text-white">Conversion <span className="text-brand-neon">History</span></h1>
+        <p className="text-text-secondary text-xs mt-1">Review your past converted booking codes and mapped selections.</p>
       </div>
 
-      {history.length === 0 ? (
-        <Card variant="glass" className="flex flex-col items-center justify-center py-16 text-center gap-3">
-          <HistoryIcon className="w-10 h-10 text-text-muted" />
-          <h2 className="font-display font-bold text-sm uppercase text-text-primary">No Conversions Yet</h2>
-          <p className="text-xs text-text-secondary max-w-xs">
-            Any booking code you convert will be saved here for instant re-copying.
-          </p>
-        </Card>
-      ) : (
-        <div className="flex flex-col gap-3">
-          {history.map((item) => (
-            <Card key={item.id} variant="glass" className="flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-text-primary uppercase">
-                  {item.source_bookmaker} ➔ {item.dest_bookmaker}
-                </span>
-                <Badge variant={item.status === "success" ? "success" : item.status === "partial" ? "warning" : "danger"}>
-                  {item.status} ({item.selections_matched}/{item.selections_total})
-                </Badge>
+      <div className="space-y-3">
+        {history.map((record) => (
+          <div key={record.id} className="bg-surface/60 border border-white/10 rounded-2xl p-4 sm:p-5 backdrop-blur-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-brand-neon/30 transition-colors">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-xs font-bold text-white uppercase">
+                <span>{record.from_bookmaker}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-brand-neon" />
+                <span className="text-brand-neon">{record.to_bookmaker}</span>
               </div>
+              <div className="flex items-center gap-3 text-xs text-text-secondary mt-1">
+                <span>Original Code: <strong className="text-white font-mono">{record.source_code}</strong></span>
+                <span>•</span>
+                <span>Matches: {record.matched_count}/{record.selections_count || 8}</span>
+              </div>
+            </div>
 
-              {item.dest_code && (
-                <div className="flex items-center justify-between bg-surface-subtle/60 p-3 rounded-2xl border border-border-subtle mt-1">
-                  <span className="font-mono text-sm font-bold tracking-widest text-accent-1">
-                    {item.dest_code}
-                  </span>
-                  <Button
-                    size="sm"
-                    variant={copiedId === item.id ? "primary" : "secondary"}
-                    onClick={() => handleCopy(item.id, item.dest_code!)}
-                    leftIcon={copiedId === item.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  >
-                    {copiedId === item.id ? "Copied" : "Copy"}
-                  </Button>
-                </div>
-              )}
-              <span className="text-[10px] text-text-muted">
-                {new Date(item.created_at).toLocaleString()}
-              </span>
-            </Card>
-          ))}
-        </div>
-      )}
+            <div className="flex items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
+              <div className="text-right">
+                <span className="text-[10px] text-text-secondary block">Converted Code</span>
+                <span className="font-mono text-base font-bold text-brand-neon">{record.target_code}</span>
+              </div>
+              <button
+                onClick={() => handleCopy(record.target_code, record.id)}
+                className="p-2.5 rounded-xl bg-app border border-white/10 text-white hover:text-brand-neon transition-colors"
+                title="Copy Converted Code"
+              >
+                {copiedId === record.id ? <Check className="w-4 h-4 text-brand-neon" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -1,26 +1,24 @@
 import express from "express";
-import helmet from "helmet";
-import { config } from "./config";
-import { logger } from "./infra/logger";
-import { requireWorkerKey } from "./middleware/auth";
-import { errorHandler } from "./middleware/errorHandler";
+import cors from "cors";
+import dotenv from "dotenv";
 import { convertRouter } from "./routes/convert";
-import { healthRouter } from "./routes/health";
-import { webhookRouter } from "./routes/webhook";
+import { newsRouter } from "./routes/news";
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-app.use(helmet());
+app.use(cors({ origin: true }));
 app.use(express.json());
 
-app.use("/health", healthRouter);
-app.use("/webhook", webhookRouter);
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok", service: "BetForge Engine" });
+});
 
-app.use(requireWorkerKey);
-app.use("/convert", convertRouter);
+app.use("/api/convert", convertRouter);
+app.use("/api/news", newsRouter);
 
-app.use(errorHandler);
-
-app.listen(config.PORT, () => {
-  logger.info(`BetConvert worker listening on port ${config.PORT}`);
+app.listen(PORT, () => {
+  console.log(`⚡ BetForge Engine running on port ${PORT}`);
 });

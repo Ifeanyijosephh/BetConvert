@@ -1,5 +1,8 @@
-import { logger } from "./logger";
-export async function withRetry(fn, opts) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.withRetry = withRetry;
+const logger_1 = require("./logger");
+async function withRetry(fn, opts) {
     let lastError;
     for (let attempt = 1; attempt <= opts.maxAttempts; attempt++) {
         try {
@@ -8,7 +11,7 @@ export async function withRetry(fn, opts) {
         catch (err) {
             lastError = err instanceof Error ? err : new Error(String(err));
             if (attempt === opts.maxAttempts) {
-                logger.error({ context: opts.context, attempt, error: lastError.message }, "Retry exhausted");
+                logger_1.logger.error({ context: opts.context, attempt, error: lastError.message }, "Retry exhausted");
                 throw lastError;
             }
             const delay = Math.min(opts.initialDelayMs * Math.pow(2, attempt - 1), opts.maxDelayMs);

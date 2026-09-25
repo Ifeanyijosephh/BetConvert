@@ -10,22 +10,25 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@betconvert/shared": "*",
     "@supabase/supabase-js": "^2.45.0",
     "axios": "^1.7.4",
     "cheerio": "^1.0.0",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
     "fuse.js": "^7.0.0",
     "helmet": "^7.1.0",
     "pino": "^9.3.2",
     "pino-pretty": "^11.2.2",
-    "zod": "^3.23.8",
-    "@betconvert/shared": "*"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.25",
     "@types/node": "^22.4.0",
+    "ts-node": "^10.9.2",
     "tsx": "^4.17.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.9.3"
   }
 }
