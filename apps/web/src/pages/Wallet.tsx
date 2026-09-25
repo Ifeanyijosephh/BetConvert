@@ -1,99 +1,69 @@
-import React, { useState } from "react";
-import { Copy, Check, ShieldCheck, Building2, Zap } from "lucide-react";
-import { Card } from "../components/ui/Card";
-import { Button } from "../components/ui/Button";
-import { Badge } from "../components/ui/Badge";
-import { useAuth } from "../hooks/useAuth";
+import React from "react";
+import { Wallet as WalletIcon, ArrowUpRight, History, ShieldCheck, Zap } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export const Wallet: React.FC = () => {
-  const { user, balance } = useAuth();
-  const [accountCopied, setAccountCopied] = useState(false);
-
-  const virtualAccount = {
-    bankName: "Wema Bank / PocketFi",
-    accountNumber: "0239481029",
-    accountName: `BETFORGE-${user?.email?.split("@")[0]?.toUpperCase() || "USER"}`,
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(virtualAccount.accountNumber);
-    setAccountCopied(true);
-    setTimeout(() => setAccountCopied(false), 2000);
-  };
+  const { balance } = useAuth();
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 py-6 flex flex-col gap-6 pb-24">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display font-extrabold text-2xl uppercase tracking-tight text-text-primary">
-            My <span className="gradient-text">Wallet</span>
-          </h1>
-          <p className="text-xs text-text-secondary mt-0.5">Automated bank transfer credit top-up</p>
+    <div className="min-h-screen bg-app pt-24 pb-28 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
+      <div>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon text-xs font-black uppercase tracking-wider mb-2">
+          <WalletIcon className="w-3.5 h-3.5" /> BetForge Wallet
         </div>
+        <h1 className="text-3xl font-black text-white">Wallet & <span className="text-brand-neon">Credits</span></h1>
+        <p className="text-text-secondary text-xs mt-1 font-medium">Fund your account instantly via virtual account transfer.</p>
       </div>
 
-      {/* Balance Glass Card */}
-      <Card variant="glass" className="flex flex-col gap-4 border-accent-1/30 shadow-glow">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-text-muted">Available Balance</span>
-          <Badge variant="brand">₦200 = 1 Credit</Badge>
-        </div>
-        <div className="flex items-baseline gap-2">
-          <span className="font-mono text-5xl font-extrabold tracking-tight tabular-nums gradient-text">
-            {balance}
-          </span>
-          <span className="text-sm font-bold uppercase text-text-secondary">Credits</span>
-          <span className="text-xs text-text-muted ml-auto font-mono">
-            ≈ ₦{(balance * 200).toLocaleString()}
-          </span>
-        </div>
-      </Card>
-
-      {/* PocketFi Dedicated Deposit Account */}
-      <Card variant="glass" className="flex flex-col gap-4">
-        <div className="flex items-center gap-2">
-          <Building2 className="w-4.5 h-4.5 text-accent-2" />
-          <h2 className="font-display font-bold text-sm uppercase text-text-primary">
-            Dedicated Deposit Account
-          </h2>
-        </div>
-        <p className="text-xs text-text-secondary leading-relaxed">
-          Transfer any amount to your unique account number below. Your wallet will be credited automatically within seconds.
-        </p>
-
-        <div className="bg-surface-subtle/60 rounded-2xl p-4 border border-border-subtle flex flex-col gap-3">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-text-muted">Bank Name</span>
-            <span className="font-bold text-text-primary">{virtualAccount.bankName}</span>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-up">
+        {/* Balance Card */}
+        <div className="md:col-span-1 bg-surface/80 border border-brand-neon/30 rounded-3xl p-6 backdrop-blur-xl shadow-brand-neon flex flex-col justify-center items-center text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-neon/10 rounded-full blur-[50px]" />
+          <div className="w-12 h-12 rounded-xl bg-brand-neon/10 border border-brand-neon/20 flex items-center justify-center text-brand-neon mb-4">
+            <Zap className="w-6 h-6" />
           </div>
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-text-muted">Account Name</span>
-            <span className="font-bold text-text-primary">{virtualAccount.accountName}</span>
-          </div>
-          <div className="flex justify-between items-center pt-3 border-t border-border-subtle">
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-bold text-text-muted">Account Number</span>
-              <span className="font-mono text-xl font-extrabold tracking-widest text-text-primary">
-                {virtualAccount.accountNumber}
-              </span>
+          <p className="text-[10px] font-black text-text-secondary uppercase tracking-widest mb-1">Available Credits</p>
+          <h2 className="text-5xl font-black text-white">{balance}</h2>
+          <p className="text-brand-neon text-xs font-bold mt-2">₦{(balance * 200).toLocaleString()} Value</p>
+        </div>
+
+        {/* Deposit Card */}
+        <div className="md:col-span-2 bg-surface/80 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-xl shadow-2xl">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+              <ArrowUpRight className="w-5 h-5" />
             </div>
-            <Button
-              size="sm"
-              variant={accountCopied ? "primary" : "secondary"}
-              onClick={handleCopy}
-              leftIcon={accountCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-            >
-              {accountCopied ? "Copied" : "Copy"}
-            </Button>
+            <div>
+              <h3 className="text-white font-black text-lg">Deposit Funds</h3>
+              <p className="text-text-secondary text-xs font-medium">Transfer to your dedicated virtual account.</p>
+            </div>
+          </div>
+
+          <div className="bg-app border border-white/10 rounded-2xl p-5 space-y-4">
+            <div className="flex justify-between items-center pb-4 border-b border-white/5">
+              <span className="text-xs text-text-secondary font-bold uppercase tracking-wider">Bank Name</span>
+              <span className="text-sm text-white font-black">Providus Bank</span>
+            </div>
+            <div className="flex justify-between items-center pb-4 border-b border-white/5">
+              <span className="text-xs text-text-secondary font-bold uppercase tracking-wider">Account Number</span>
+              <div className="flex items-center gap-3">
+                <span className="text-xl text-brand-neon font-black tracking-widest">9901458821</span>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-text-secondary font-bold uppercase tracking-wider">Account Name</span>
+              <span className="text-sm text-white font-black">BetForge - Wallet</span>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+            <ShieldCheck className="w-5 h-5 text-brand-neon shrink-0" />
+            <p className="text-[11px] text-text-secondary font-medium leading-relaxed">
+              Transfers reflect instantly. 1 Credit = ₦200. Used exclusively for booking code conversions after your 3 daily free limits are exhausted.
+            </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-2 text-[11px] text-text-muted pt-1">
-          <ShieldCheck className="w-4 h-4 text-status-success shrink-0" />
-          <span>Secured by PocketFi & CBN-licensed banking partners</span>
-        </div>
-      </Card>
+      </div>
     </div>
   );
 };

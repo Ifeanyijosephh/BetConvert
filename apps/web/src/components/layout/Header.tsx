@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Zap, Menu, User, Wallet, LogIn, UserPlus } from "lucide-react";
+import { Zap, Menu, Wallet, LogIn, UserPlus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 interface HeaderProps {
@@ -8,7 +8,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
-  const { user, balance, profile } = useAuth();
+  const { user, balance } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -42,26 +42,13 @@ export const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
 
       <div className="flex items-center gap-3">
         {user ? (
-          <>
-            <button
-              onClick={() => navigate("/wallet")}
-              className="flex items-center gap-2 bg-surface hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold text-brand-neon transition-all pressable"
-            >
-              <Wallet className="w-3.5 h-3.5" />
-              <span>{balance} Credits</span>
-            </button>
-
-            <Link
-              to="/account"
-              className="w-9 h-9 rounded-full bg-surface border border-brand-neon/50 p-0.5 flex items-center justify-center overflow-hidden hover:border-brand-neon transition-colors pressable"
-            >
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <User className="w-4 h-4 text-text-secondary" />
-              )}
-            </Link>
-          </>
+          <button
+            onClick={() => navigate("/wallet")}
+            className="flex items-center gap-2 bg-surface hover:bg-white/10 border border-white/10 px-4 py-2 rounded-xl text-xs font-bold text-brand-neon transition-all pressable"
+          >
+            <Wallet className="w-4 h-4" />
+            <span>{balance} Credits</span>
+          </button>
         ) : (
           <div className="hidden sm:flex items-center gap-2">
             <Link
