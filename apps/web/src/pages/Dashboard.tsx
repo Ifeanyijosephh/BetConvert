@@ -13,11 +13,9 @@ export const Dashboard: React.FC = () => {
         <div className="absolute top-0 right-0 w-64 h-64 bg-brand-neon/10 rounded-full blur-[80px] pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon text-xs font-bold mb-3">
-              <Sparkles className="w-3.5 h-3.5" /> BetForge Engine Active
-            </div>
+ 
             <h1 className="text-2xl md:text-3xl font-extrabold text-white">
-              Welcome back, <span className="text-brand-neon">{profile?.full_name || "Bettor"}</span> 👋
+              Welcome back, <span className="text-brand-neon">{profile?.full_name || "Bettor"}</span> 
             </h1>
             <p className="text-text-secondary text-sm mt-1 max-w-xl">
               Convert codes seamlessly between SportyBet, 1xBet, Bet9ja, BetKing, BangBet & 8+ West African bookies.

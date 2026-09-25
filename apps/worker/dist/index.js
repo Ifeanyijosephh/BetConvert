@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const convert_1 = require("./routes/convert");
 const news_1 = require("./routes/news");
+const scores_1 = require("./routes/scores");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
@@ -18,6 +19,7 @@ app.get("/health", (_req, res) => {
 });
 app.use("/api/convert", convert_1.convertRouter);
 app.use("/api/news", news_1.newsRouter);
+app.use("/api/scores", scores_1.scoresRouter);
 app.listen(PORT, () => {
     console.log(`⚡ BetForge Engine running on port ${PORT}`);
 });

@@ -8,6 +8,7 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 
 interface Match {
@@ -26,131 +27,6 @@ interface Match {
   events?: string[];
 }
 
-const INITIAL_MATCHES: Match[] = [
-  {
-    id: "m1",
-    league: "UEFA Champions League",
-    leagueFlag: "🇪🇺",
-    homeTeam: "Arsenal",
-    awayTeam: "Bayern Munich",
-    homeLogo: "https://media.api-sports.io/football/teams/42.png",
-    awayLogo: "https://media.api-sports.io/football/teams/157.png",
-    homeScore: 2,
-    awayScore: 1,
-    status: "LIVE",
-    minute: "68'",
-    events: ["⚽ Saka 24'", "⚽ Kane 41' (P)", "⚽ Trossard 62'"],
-  },
-  {
-    id: "m2",
-    league: "UEFA Champions League",
-    leagueFlag: "🇪🇺",
-    homeTeam: "Real Madrid",
-    awayTeam: "Manchester City",
-    homeLogo: "https://media.api-sports.io/football/teams/541.png",
-    awayLogo: "https://media.api-sports.io/football/teams/50.png",
-    homeScore: 3,
-    awayScore: 3,
-    status: "FT",
-    events: ["⚽ Camavinga 12'", "⚽ Rodrygo 14'", "⚽ Foden 66'", "⚽ Gvardiol 71'", "⚽ Valverde 79'"],
-  },
-  {
-    id: "m3",
-    league: "UEFA Champions League",
-    leagueFlag: "🇪🇺",
-    homeTeam: "Paris Saint-Germain",
-    awayTeam: "FC Barcelona",
-    homeLogo: "https://media.api-sports.io/football/teams/85.png",
-    awayLogo: "https://media.api-sports.io/football/teams/529.png",
-    homeScore: null,
-    awayScore: null,
-    status: "NS",
-    startTime: "20:00",
-  },
-  {
-    id: "m4",
-    league: "Premier League",
-    leagueFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    homeTeam: "Liverpool",
-    awayTeam: "Chelsea",
-    homeLogo: "https://media.api-sports.io/football/teams/40.png",
-    awayLogo: "https://media.api-sports.io/football/teams/49.png",
-    homeScore: 1,
-    awayScore: 0,
-    status: "LIVE",
-    minute: "34'",
-    events: ["⚽ Salah 18'"],
-  },
-  {
-    id: "m5",
-    league: "Premier League",
-    leagueFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    homeTeam: "Tottenham Hotspur",
-    awayTeam: "Aston Villa",
-    homeLogo: "https://media.api-sports.io/football/teams/47.png",
-    awayLogo: "https://media.api-sports.io/football/teams/66.png",
-    homeScore: 2,
-    awayScore: 2,
-    status: "HT",
-    minute: "HT",
-    events: ["⚽ Son 8'", "⚽ Watkins 22'", "⚽ Maddison 39'", "⚽ Bailey 45+2'"],
-  },
-  {
-    id: "m6",
-    league: "Premier League",
-    leagueFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
-    homeTeam: "Manchester United",
-    awayTeam: "Newcastle United",
-    homeLogo: "https://media.api-sports.io/football/teams/33.png",
-    awayLogo: "https://media.api-sports.io/football/teams/34.png",
-    homeScore: null,
-    awayScore: null,
-    status: "NS",
-    startTime: "20:30",
-  },
-  {
-    id: "m7",
-    league: "Spanish La Liga",
-    leagueFlag: "🇪🇸",
-    homeTeam: "Atletico Madrid",
-    awayTeam: "Girona FC",
-    homeLogo: "https://media.api-sports.io/football/teams/530.png",
-    awayLogo: "https://media.api-sports.io/football/teams/547.png",
-    homeScore: 3,
-    awayScore: 1,
-    status: "FT",
-    events: ["⚽ Dovbyk 4'", "⚽ Griezmann 34' (P)", "⚽ Correa 45+6'", "⚽ Griezmann 50'"],
-  },
-  {
-    id: "m8",
-    league: "Nigeria NPFL",
-    leagueFlag: "🇳🇬",
-    homeTeam: "Enyimba FC",
-    awayTeam: "Rivers United",
-    homeLogo: "https://media.api-sports.io/football/teams/2275.png",
-    awayLogo: "https://media.api-sports.io/football/teams/2279.png",
-    homeScore: 1,
-    awayScore: 0,
-    status: "LIVE",
-    minute: "81'",
-    events: ["⚽ Mbaoma 54'"],
-  },
-  {
-    id: "m9",
-    league: "Nigeria NPFL",
-    leagueFlag: "🇳🇬",
-    homeTeam: "Remo Stars",
-    awayTeam: "Kano Pillars",
-    homeLogo: "https://media.api-sports.io/football/teams/2281.png",
-    awayLogo: "https://media.api-sports.io/football/teams/2276.png",
-    homeScore: null,
-    awayScore: null,
-    status: "NS",
-    startTime: "16:00",
-  },
-];
-
-/** Auto marquee + drag/swipe scroll container with zero scrollbars */
 function ScrollMarquee({ children }: { children: React.ReactNode }) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
@@ -204,37 +80,43 @@ function ScrollMarquee({ children }: { children: React.ReactNode }) {
 }
 
 export const Scores: React.FC = () => {
-  const [matches, setMatches] = useState<Match[]>(INITIAL_MATCHES);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<"ALL" | "LIVE" | "FT" | "NS">("ALL");
   const [selectedLeague, setSelectedLeague] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastUpdated, setLastUpdated] = useState("Just now");
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMatches((prev) =>
-        prev.map((m) => {
-          if (m.status === "LIVE" && m.minute && m.minute.includes("'")) {
-            const currentMin = parseInt(m.minute.replace("'", ""), 10);
-            if (!isNaN(currentMin) && currentMin < 90) {
-              return { ...m, minute: `${currentMin + 1}'` };
-            }
-          }
-          return m;
-        })
-      );
-    }, 15000);
-    return () => clearInterval(interval);
-  }, []);
+  const loadScores = async (isManual = false) => {
+    if (isManual) setIsRefreshing(true);
+    else setLoading(true);
 
-  const handleRefresh = () => {
-    setIsRefreshing(true);
-    setTimeout(() => {
+    try {
+      const workerUrl =
+        (import.meta as any).env?.VITE_WORKER_URL?.replace(/\/$/, "") ||
+        "http://localhost:8080";
+
+      const res = await fetch(`${workerUrl}/api/scores`);
+      const json = await res.json();
+
+      if (json.success && Array.isArray(json.data)) {
+        setMatches(json.data);
+      }
+    } catch (_err) {
+      console.warn("Could not fetch live scores from worker");
+    } finally {
+      setLoading(false);
       setIsRefreshing(false);
       setLastUpdated(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
-    }, 800);
+    }
   };
+
+  useEffect(() => {
+    loadScores();
+    const interval = setInterval(() => loadScores(true), 30000); // Live poll every 30s
+    return () => clearInterval(interval);
+  }, []);
 
   const filteredMatches = matches.filter((m) => {
     const matchesStatus =
@@ -256,7 +138,7 @@ export const Scores: React.FC = () => {
     return matchesStatus && matchesLeague && matchesSearch;
   });
 
-  const leagues = Array.from(new Set(INITIAL_MATCHES.map((m) => m.league)));
+  const leagues = Array.from(new Set(matches.map((m) => m.league)));
   const liveCount = matches.filter((m) => m.status === "LIVE" || m.status === "HT").length;
   const finishedCount = matches.filter((m) => m.status === "FT").length;
   const scheduledCount = matches.filter((m) => m.status === "NS").length;
@@ -274,38 +156,29 @@ export const Scores: React.FC = () => {
       >
         🏆 All Competitions
       </button>
-      {leagues.map((lg) => (
-        <button
-          key={lg}
-          type="button"
-          onClick={() => setSelectedLeague(lg)}
-          className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all pressable shrink-0 ${
-            selectedLeague === lg
-              ? "bg-brand-neon text-black shadow-md shadow-brand-neon/20"
-              : "bg-surface text-text-secondary hover:text-white border border-white/10"
-          }`}
-        >
-          {INITIAL_MATCHES.find((m) => m.league === lg)?.leagueFlag} {lg}
-        </button>
-      ))}
-      <button type="button" onClick={() => setSelectedLeague("Premier League")} className="px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-surface text-text-secondary border border-white/10 shrink-0 pressable">
-        🏴󠁧󠁢󠁥󠁮󠁧󠁿 EPL
-      </button>
-      <button type="button" onClick={() => setSelectedLeague("UEFA Champions League")} className="px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-surface text-text-secondary border border-white/10 shrink-0 pressable">
-        🇪🇺 UCL
-      </button>
-      <button type="button" onClick={() => setSelectedLeague("Spanish La Liga")} className="px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-surface text-text-secondary border border-white/10 shrink-0 pressable">
-        🇪🇸 La Liga
-      </button>
-      <button type="button" onClick={() => setSelectedLeague("Nigeria NPFL")} className="px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-surface text-text-secondary border border-white/10 shrink-0 pressable">
-        🇳🇬 NPFL
-      </button>
+      {leagues.map((lg) => {
+        const flag = matches.find((m) => m.league === lg)?.leagueFlag || "⚽";
+        return (
+          <button
+            key={lg}
+            type="button"
+            onClick={() => setSelectedLeague(lg)}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all pressable shrink-0 ${
+              selectedLeague === lg
+                ? "bg-brand-neon text-black shadow-md shadow-brand-neon/20"
+                : "bg-surface text-text-secondary hover:text-white border border-white/10"
+            }`}
+          >
+            {flag} {lg}
+          </button>
+        );
+      })}
     </>
   );
 
   return (
     <div className="min-h-screen bg-app pt-24 pb-28 px-4 md:px-8 max-w-6xl mx-auto space-y-6">
-      {/* Header Banner */}
+      {/* Header */}
       <div className="bg-surface/80 border border-white/10 rounded-3xl p-6 md:p-8 backdrop-blur-xl relative overflow-hidden animate-fade-up">
         <div className="absolute top-0 right-0 w-80 h-80 bg-brand-neon/10 rounded-full blur-[100px] pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -323,7 +196,7 @@ export const Scores: React.FC = () => {
             </p>
           </div>
           <button
-            onClick={handleRefresh}
+            onClick={() => loadScores(true)}
             className="self-start py-3 px-4 bg-surface hover:bg-white/10 border border-white/10 text-white font-bold text-xs rounded-xl transition-all flex items-center gap-2 pressable"
           >
             <RefreshCw className={`w-4 h-4 text-brand-neon ${isRefreshing ? "animate-spin" : ""}`} />
@@ -332,7 +205,7 @@ export const Scores: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter Toolbar */}
+      {/* Filters */}
       <div className="space-y-4 animate-fade-up-delay-1">
         <div className="bg-surface/60 border border-white/10 p-2 rounded-2xl backdrop-blur-md space-y-3">
           <div className="no-scrollbar overflow-x-auto overflow-y-hidden touch-pan-x">
@@ -356,56 +229,64 @@ export const Scores: React.FC = () => {
           </div>
         </div>
 
-        {/* Competitions Marquee — auto-scroll + drag swipe, hidden scrollbar */}
-        <div className="rounded-2xl border border-white/10 bg-surface/40 p-2">
-          <p className="text-[9px] font-black uppercase tracking-[0.18em] text-text-secondary/70 px-2 mb-2">
-            Competitions · swipe or drag
-          </p>
-          <ScrollMarquee>{leagueChips}</ScrollMarquee>
-        </div>
+        {/* Competitions Marquee */}
+        {leagues.length > 0 && (
+          <div className="rounded-2xl border border-white/10 bg-surface/40 p-2">
+            <p className="text-[9px] font-black uppercase tracking-[0.18em] text-text-secondary/70 px-2 mb-2">
+              Competitions · swipe or drag
+            </p>
+            <ScrollMarquee>{leagueChips}</ScrollMarquee>
+          </div>
+        )}
       </div>
 
       {/* Match Cards List */}
-      <div className="space-y-6 animate-fade-up-delay-2">
-        {filteredMatches.length === 0 ? (
-          <div className="bg-surface/40 border border-white/10 rounded-3xl p-12 text-center space-y-3">
-            <Trophy className="w-10 h-10 text-text-secondary/40 mx-auto" />
-            <h3 className="text-white font-bold text-base">No matches found</h3>
-            <p className="text-text-secondary text-xs max-w-sm mx-auto">
-              Try adjusting your search or switching between Live, Finished, and Scheduled filters.
-            </p>
-          </div>
-        ) : (
-          leagues.map((lg) => {
-            const lgMatches = filteredMatches.filter((m) => m.league === lg);
-            if (lgMatches.length === 0) return null;
+      {loading ? (
+        <div className="flex justify-center items-center py-20">
+          <Loader2 className="w-8 h-8 text-brand-neon animate-spin" />
+        </div>
+      ) : (
+        <div className="space-y-6 animate-fade-up-delay-2">
+          {filteredMatches.length === 0 ? (
+            <div className="bg-surface/40 border border-white/10 rounded-3xl p-12 text-center space-y-3">
+              <Trophy className="w-10 h-10 text-text-secondary/40 mx-auto" />
+              <h3 className="text-white font-bold text-base">No matches found</h3>
+              <p className="text-text-secondary text-xs max-w-sm mx-auto">
+                Try adjusting your search or switching between Live, Finished, and Scheduled filters.
+              </p>
+            </div>
+          ) : (
+            leagues.map((lg) => {
+              const lgMatches = filteredMatches.filter((m) => m.league === lg);
+              if (lgMatches.length === 0) return null;
 
-            return (
-              <div key={lg} className="space-y-3">
-                <div className="flex items-center justify-between px-1">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-lg shrink-0">
-                      {INITIAL_MATCHES.find((m) => m.league === lg)?.leagueFlag}
+              return (
+                <div key={lg} className="space-y-3">
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-lg shrink-0">
+                        {matches.find((m) => m.league === lg)?.leagueFlag || "⚽"}
+                      </span>
+                      <h3 className="text-sm font-black text-white uppercase tracking-wider break-words">
+                        {lg}
+                      </h3>
+                    </div>
+                    <span className="text-xs text-text-secondary font-bold shrink-0 ml-2">
+                      {lgMatches.length} {lgMatches.length === 1 ? "match" : "matches"}
                     </span>
-                    <h3 className="text-sm font-black text-white uppercase tracking-wider break-words">
-                      {lg}
-                    </h3>
                   </div>
-                  <span className="text-xs text-text-secondary font-bold shrink-0 ml-2">
-                    {lgMatches.length} {lgMatches.length === 1 ? "match" : "matches"}
-                  </span>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {lgMatches.map((m) => (
-                    <MatchCard key={m.id} match={m} />
-                  ))}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {lgMatches.map((m) => (
+                      <MatchCard key={m.id} match={m} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            );
-          })
-        )}
-      </div>
+              );
+            })
+          )}
+        </div>
+      )}
     </div>
   );
 };

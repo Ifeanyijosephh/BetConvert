@@ -20,9 +20,7 @@ export const HistoryPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-app pt-24 pb-28 px-4 md:px-8 max-w-5xl mx-auto space-y-6">
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon text-xs font-bold mb-2">
-          <HistoryIcon className="w-3.5 h-3.5" /> Order Logs
-        </div>
+ 
         <h1 className="text-3xl font-extrabold text-white">Conversion <span className="text-brand-neon">History</span></h1>
         <p className="text-text-secondary text-xs mt-1">Review your past converted booking codes and mapped selections.</p>
       </div>

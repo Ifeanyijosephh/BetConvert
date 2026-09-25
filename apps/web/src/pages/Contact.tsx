@@ -33,7 +33,7 @@ export const Contact: React.FC = () => {
             </div>
             <div>
               <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Direct Admin Email</h4>
-              <p className="text-sm font-semibold text-white mt-0.5">support@betforge.app</p>
+              <p className="text-sm font-semibold text-white mt-0.5">info@betforge.app</p>
             </div>
           </div>
 

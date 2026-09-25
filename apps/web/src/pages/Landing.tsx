@@ -11,12 +11,9 @@ export const Landing: React.FC = () => {
     <div className="min-h-screen flex flex-col pt-20 relative overflow-hidden">
       <BackgroundVideo />
 
-      <div className="w-full max-w-4xl mx-auto px-4 py-8 md:py-16 flex flex-col items-center text-center gap-8 pb-24 z-10 animate-fade-up">
+      <div className="w-full max-w-4xl mx-auto mt-5 px-4 py-8 md:py-16 flex flex-col items-center text-center gap-8 pb-24 z-10 animate-fade-up">
         
-        <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-surface/80 border border-brand-neon/30 text-brand-neon text-xs font-bold uppercase tracking-wider backdrop-blur-md shadow-lg">
-          <Sparkles className="w-3.5 h-3.5" />
-          #1 Booking Code Converter in Nigeria
-        </div>
+ 
 
         <div className="flex flex-col gap-4 max-w-3xl animate-fade-up-delay-1">
           <h1 className="font-black text-4xl md:text-6xl uppercase tracking-tight text-white leading-[1.1] drop-shadow-lg">

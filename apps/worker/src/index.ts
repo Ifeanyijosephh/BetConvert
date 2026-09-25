@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { convertRouter } from "./routes/convert";
 import { newsRouter } from "./routes/news";
+import { scoresRouter } from "./routes/scores";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.get("/health", (_req, res) => {
 
 app.use("/api/convert", convertRouter);
 app.use("/api/news", newsRouter);
+app.use("/api/scores", scoresRouter);
 
 app.listen(PORT, () => {
   console.log(`⚡ BetForge Engine running on port ${PORT}`);

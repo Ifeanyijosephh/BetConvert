@@ -8,9 +8,7 @@ export const Wallet: React.FC = () => {
   return (
     <div className="min-h-screen bg-app pt-24 pb-28 px-4 md:px-8 max-w-4xl mx-auto space-y-6">
       <div>
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-neon/10 border border-brand-neon/20 text-brand-neon text-xs font-black uppercase tracking-wider mb-2">
-          <WalletIcon className="w-3.5 h-3.5" /> BetForge Wallet
-        </div>
+ 
         <h1 className="text-3xl font-black text-white">Wallet & <span className="text-brand-neon">Credits</span></h1>
         <p className="text-text-secondary text-xs mt-1 font-medium">Fund your account instantly via virtual account transfer.</p>
       </div>
